@@ -55,6 +55,8 @@ class Permission(Abstract):
              GNU General Public License 2
 	"""
 
+	# pylint: disable=invalid-name
+
 	__tablename__ = "{0}_permission".format(Abstract.get_table_prefix())
 	"""
 SQLAlchemy table name
