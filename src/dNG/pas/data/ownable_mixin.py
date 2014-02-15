@@ -69,17 +69,44 @@ Cached document permissions
 
 	def _get_permissions(self, cache_id):
 	#
+		"""
+Return the list of permission rules based on the given cache ID.
+
+:param cache_id: Permission cache ID
+
+:return: (dict) Dict of permissions
+:since:  v0.1.00
+		"""
+
 		self._init_permission_cache()
 		return (self.permission_cache[cache_id] if (cache_id in self.permission_cache) else { })
 	#
 
 	def _get_permissions_group(self, group_id):
 	#
+		"""
+Return the list of group permission rules based on the given group ID.
+
+:param group_id: Group ID
+
+:return: (dict) Dict of permissions
+:since:  v0.1.00
+		"""
+
 		return self._get_permissions("g_{0}".format(group_id))
 	#
 
 	def _get_permissions_user(self, user_id):
 	#
+		"""
+Return the list of user permission rules based on the given user ID.
+
+:param user_id: User ID
+
+:return: (dict) Dict of permissions
+:since:  v0.1.00
+		"""
+
 		return self._get_permissions("u_{0}".format(user_id))
 	#
 
