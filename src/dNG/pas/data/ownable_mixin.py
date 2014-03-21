@@ -252,7 +252,7 @@ Returns if the entry is writable for the given user ID.
 		"""
 Resets the permission cache.
 
-:return: (object) SQLalchemy relationship description
+:return: (object) SQLAlchemy relationship description
 :since:  v0.1.00
 		"""
 
@@ -279,7 +279,7 @@ Resets the permission cache.
 		"""
 Relation to TextEntry (backref is set as "rel_referer")
 
-:return: (object) SQLalchemy relationship description
+:return: (object) SQLAlchemy relationship description
 :since:  v0.1.00
 		"""
 
@@ -292,7 +292,7 @@ Relation to TextEntry (backref is set as "rel_referer")
 		"""
 Relation to TextEntry (backref is set as "rel_referer")
 
-:return: (object) SQLalchemy relationship description
+:return: (object) SQLAlchemy relationship description
 :since:  v0.1.00
 		"""
 
@@ -305,7 +305,7 @@ Relation to TextEntry (backref is set as "rel_referer")
 		"""
 Relation to TextEntry (backref is set as "rel_referer")
 
-:return: (object) SQLalchemy relationship description
+:return: (object) SQLAlchemy relationship description
 :since:  v0.1.00
 		"""
 
@@ -318,7 +318,7 @@ Relation to TextEntry (backref is set as "rel_referer")
 		"""
 Relation to TextEntry (backref is set as "rel_referer")
 
-:return: (object) SQLalchemy relationship description
+:return: (object) SQLAlchemy relationship description
 :since:  v0.1.00
 		"""
 
