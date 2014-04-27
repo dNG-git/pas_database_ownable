@@ -36,7 +36,7 @@ http://www.direct-netware.de/redirect.py?licenses;gpl
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from dNG.pas.data.user.profile import Profile
+from dNG.pas.module.named_loader import NamedLoader
 
 class OwnableMixin(object):
 #
@@ -145,7 +145,9 @@ Returns if the entry is manageable for the given user ID.
 		"""
 
 		_return = False
-		user_profile = (None if (_return or user_id == None) else Profile.load_id(user_id))
+
+		user_profile_class = NamedLoader.get_class("dNG.pas.data.user.Profile")
+		user_profile = (None if (user_id == None or user_profile_class == None) else user_profile_class.load_id(user_id))
 
 		if (user_profile != None and user_profile.is_valid()):
 		#
@@ -188,7 +190,9 @@ Returns if the entry is readable for the given user ID.
 		"""
 
 		_return = self.is_readable_for_guest()
-		user_profile = (None if (_return or user_id == None) else Profile.load_id(user_id))
+
+		user_profile_class = NamedLoader.get_class("dNG.pas.data.user.Profile")
+		user_profile = (None if (_return or user_id == None or user_profile_class == None) else user_profile_class.load_id(user_id))
 
 		if (user_profile != None and user_profile.is_valid()):
 		#
@@ -229,7 +233,9 @@ Returns if the entry is writable for the given user ID.
 		"""
 
 		_return = self.is_writable_for_guest()
-		user_profile = (None if (_return or user_id == None) else Profile.load_id(user_id))
+
+		user_profile_class = NamedLoader.get_class("dNG.pas.data.user.Profile")
+		user_profile = (None if (_return or user_id == None or user_profile_class == None) else user_profile_class.load_id(user_id))
 
 		if (user_profile != None and user_profile.is_valid()):
 		#

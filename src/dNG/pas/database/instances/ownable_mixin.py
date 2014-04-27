@@ -66,7 +66,7 @@ Relation to AclEntry (backref is set as "rel_referer")
 :since:  v0.1.00
 		"""
 
-		return relationship(AclEntry, primaryjoin = (foreign(self.id_object) == remote(AclEntry.owned_id)), uselist = True)
+		return relationship(AclEntry, primaryjoin = (foreign(self.id) == remote(AclEntry.owned_id)), uselist = True)
 	#
 #
 
