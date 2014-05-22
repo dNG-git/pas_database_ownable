@@ -172,12 +172,11 @@ Returns if the entry is readable for guests.
 :since:  v0.1.00
 		"""
 
-		document_data = self.data_get("locked", "public_permission")
+		document_data = self.get_data_attributes("locked", "public_permission")
 
-		return (
-			(not document_data['locked']) and
-			(document_data['public_permission'] == "r" or document_data['public_permission'] == "w")
-		)
+		return ((not document_data['locked'])
+		        and (document_data['public_permission'] == "r" or document_data['public_permission'] == "w")
+		       )
 	#
 
 	def is_readable_for_user(self, user_id):
@@ -219,7 +218,7 @@ Returns if the entry is writable for guests.
 :since:  v0.1.00
 		"""
 
-		document_data = self.data_get("locked", "public_permission")
+		document_data = self.get_data_attributes("locked", "public_permission")
 		return ((not document_data['locked']) and (document_data['public_permission'] == "w"))
 	#
 
