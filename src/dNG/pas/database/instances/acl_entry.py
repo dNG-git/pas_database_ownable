@@ -78,7 +78,7 @@ owner_list.owner_id
 	"""
 	owner_type = Column(CHAR(1), server_default = "u", nullable = False)
 	"""
-contentor_entry.owner_type
+owner_list.owner_type
 	"""
 
 	rel_permissions = relationship(Permission)

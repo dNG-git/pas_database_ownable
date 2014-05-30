@@ -76,7 +76,7 @@ permission.name
 	"""
 	permitted = Column(BOOLEAN)
 	"""
-contentor_entry.permitted
+permission.permitted
 	"""
 
 	def __init__(self, *args, **kwargs):
