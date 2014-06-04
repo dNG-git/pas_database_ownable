@@ -38,6 +38,9 @@ NOTE_END //n"""
 
 from dNG.pas.module.named_loader import NamedLoader
 
+try: from dNG.pas.data.session.implementation import Implementation as Session
+except ImportError: Session = None
+
 class OwnableMixin(object):
 #
 	"""
@@ -70,7 +73,7 @@ Cached document permissions
 	def _get_permissions(self, cache_id):
 	#
 		"""
-Return the list of permission rules based on the given cache ID.
+Returns the list of permission rules based on the given cache ID.
 
 :param cache_id: Permission cache ID
 
@@ -85,7 +88,7 @@ Return the list of permission rules based on the given cache ID.
 	def _get_permissions_group(self, group_id):
 	#
 		"""
-Return the list of group permission rules based on the given group ID.
+Returns the list of group permission rules based on the given group ID.
 
 :param group_id: Group ID
 
@@ -99,7 +102,7 @@ Return the list of group permission rules based on the given group ID.
 	def _get_permissions_user(self, user_id):
 	#
 		"""
-Return the list of user permission rules based on the given user ID.
+Returns the list of user permission rules based on the given user ID.
 
 :param user_id: User ID
 
@@ -135,10 +138,27 @@ Initializes the permission cache.
 		#
 	#
 
+	def is_manageable_for_session_user(self, session):
+	#
+		"""
+Returns true if the entry is manageable for the user identified by the given
+session.
+
+:param session: Session instance
+
+:return: (bool) True if the entry is manageable for the given session user
+:since:  v0.1.00
+		"""
+
+		return self.is_manageable_for_user(None if (Session == None) else (Session.get_session_user_id(session)))
+	#
+
 	def is_manageable_for_user(self, user_id):
 	#
 		"""
-Returns if the entry is manageable for the given user ID.
+Returns true if the entry is manageable for the given user ID.
+
+:param user_id: User ID
 
 :return: (bool) True if the entry is manageable for the given user ID
 :since:  v0.1.00
@@ -166,7 +186,7 @@ Returns if the entry is manageable for the given user ID.
 	def is_readable_for_guest(self):
 	#
 		"""
-Returns if the entry is readable for guests.
+Returns true if the entry is readable for guests.
 
 :return: (bool) True if the entry is readable for guests
 :since:  v0.1.00
@@ -179,10 +199,27 @@ Returns if the entry is readable for guests.
 		       )
 	#
 
+	def is_readable_for_session_user(self, session):
+	#
+		"""
+Returns true if the entry is readable for the user identified by the given
+session.
+
+:param session: Session instance
+
+:return: (bool) True if the entry is readable for the given session user
+:since:  v0.1.00
+		"""
+
+		return self.is_readable_for_user(None if (Session == None) else (Session.get_session_user_id(session)))
+	#
+
 	def is_readable_for_user(self, user_id):
 	#
 		"""
-Returns if the entry is readable for the given user ID.
+Returns true if the entry is readable for the given user ID.
+
+:param user_id: User ID
 
 :return: (bool) True if the entry is readable for the given user ID
 :since:  v0.1.00
@@ -212,7 +249,7 @@ Returns if the entry is readable for the given user ID.
 	def is_writable_for_guest(self):
 	#
 		"""
-Returns if the entry is writable for guests.
+Returns true if the entry is writable for guests.
 
 :return: (bool) True if the entry is writable for guests
 :since:  v0.1.00
@@ -222,10 +259,27 @@ Returns if the entry is writable for guests.
 		return ((not document_data['locked']) and (document_data['public_permission'] == "w"))
 	#
 
+	def is_writable_for_session_user(self, session):
+	#
+		"""
+Returns true if the entry is writable for the user identified by the given
+session.
+
+:param session: Session instance
+
+:return: (bool) True if the entry is writable for the given session user
+:since:  v0.1.00
+		"""
+
+		return self.is_writable_for_user(None if (Session == None) else (Session.get_session_user_id(session)))
+	#
+
 	def is_writable_for_user(self, user_id):
 	#
 		"""
 Returns if the entry is writable for the given user ID.
+
+:param user_id: User ID
 
 :return: (bool) True if the entry is writable for the given user ID
 :since:  v0.1.00
@@ -276,58 +330,6 @@ Resets the permission cache.
 				#
 			#
 		#
-	#
-
-	@staticmethod
-	def _get_session_user_id(session):
-	#
-		"""
-Relation to TextEntry (backref is set as "rel_referer")
-
-:return: (object) SQLAlchemy relationship description
-:since:  v0.1.00
-		"""
-
-		return (None if (session == None) else session.get_user_id())
-	#
-
-	@staticmethod
-	def is_manageable_for_session_user(_entry, session):
-	#
-		"""
-Relation to TextEntry (backref is set as "rel_referer")
-
-:return: (object) SQLAlchemy relationship description
-:since:  v0.1.00
-		"""
-
-		return _entry.is_manageable_for_user(OwnableMixin._get_session_user_id(session))
-	#
-
-	@staticmethod
-	def is_readable_for_session_user(_entry, session):
-	#
-		"""
-Relation to TextEntry (backref is set as "rel_referer")
-
-:return: (object) SQLAlchemy relationship description
-:since:  v0.1.00
-		"""
-
-		return _entry.is_readable_for_user(OwnableMixin._get_session_user_id(session))
-	#
-
-	@staticmethod
-	def is_writable_for_session_user(_entry, session):
-	#
-		"""
-Relation to TextEntry (backref is set as "rel_referer")
-
-:return: (object) SQLAlchemy relationship description
-:since:  v0.1.00
-		"""
-
-		return _entry.is_writable_for_user(OwnableMixin._get_session_user_id(session))
 	#
 #
 
