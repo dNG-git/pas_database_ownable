@@ -37,6 +37,7 @@ http://www.direct-netware.de/redirect.py?licenses;gpl
 NOTE_END //n"""
 
 from dNG.pas.module.named_loader import NamedLoader
+from dNG.pas.runtime.type_exception import TypeException
 
 try: from dNG.pas.data.session.implementation import Implementation as Session
 except ImportError: Session = None
@@ -66,7 +67,11 @@ Constructor __init__(OwnableMixin)
 
 		self.permission_cache = None
 		"""
-Cached document permissions
+Cached permissions
+		"""
+		self.permission_user_id = None
+		"""
+User ID to check permissions for
 		"""
 	#
 
@@ -113,6 +118,18 @@ Returns the list of user permission rules based on the given user ID.
 		return self._get_permissions("u_{0}".format(user_id))
 	#
 
+	def get_permission_user_id(self):
+	#
+		"""
+Returns the user ID to check permissions for.
+
+:return: (str) User ID
+:since:  v0.1.00
+		"""
+
+		return self.permission_user_id
+	#
+
 	def _init_permission_cache(self):
 	#
 		"""
@@ -136,6 +153,18 @@ Initializes the permission cache.
 				#
 			#
 		#
+	#
+
+	def is_manageable(self):
+	#
+		"""
+Returns true if the entry is manageable for the defined user.
+
+:return: (bool) True if the entry is manageable for the defined user
+:since:  v0.1.00
+		"""
+
+		return self.is_manageable_for_user(self.permission_user_id)
 	#
 
 	def is_manageable_for_session_user(self, session):
@@ -183,6 +212,18 @@ Returns true if the entry is manageable for the given user ID.
 		return _return
 	#
 
+	def is_readable(self):
+	#
+		"""
+Returns true if the entry is readable for the defined user.
+
+:return: (bool) True if the entry is readable for the defined user
+:since:  v0.1.00
+		"""
+
+		return self.is_readable_for_user(self.permission_user_id)
+	#
+
 	def is_readable_for_guest(self):
 	#
 		"""
@@ -192,10 +233,10 @@ Returns true if the entry is readable for guests.
 :since:  v0.1.00
 		"""
 
-		document_data = self.get_data_attributes("locked", "public_permission")
+		entry_data = self.get_data_attributes("locked", "guest_permission")
 
-		return ((not document_data['locked'])
-		        and (document_data['public_permission'] == "r" or document_data['public_permission'] == "w")
+		return ((not entry_data['locked'])
+		        and (entry_data['guest_permission'] == "r" or entry_data['guest_permission'] == "w")
 		       )
 	#
 
@@ -232,9 +273,14 @@ Returns true if the entry is readable for the given user ID.
 
 		if (user_profile != None and user_profile.is_valid()):
 		#
-			if (user_profile.is_type("ad")): _return = True
+			entry_data = self.get_data_attributes("locked", "user_permission")
 
-			if (not _return):
+			if (user_profile.is_type("ad")): _return = True
+			elif ((not entry_data['locked'])
+			    and (entry_data['user_permission'] == "r" or entry_data['user_permission'] == "w")
+			   ): _return = True
+
+			if ((not _return) and (not entry_data['locked'])):
 			#
 				permissions = self._get_permissions_user(user_id)
 
@@ -246,6 +292,18 @@ Returns true if the entry is readable for the given user ID.
 		return _return
 	#
 
+	def is_writable(self):
+	#
+		"""
+Returns true if the entry is writable for the defined user.
+
+:return: (bool) True if the entry is writable for the defined user
+:since:  v0.1.00
+		"""
+
+		return self.is_writable_for_user(self.permission_user_id)
+	#
+
 	def is_writable_for_guest(self):
 	#
 		"""
@@ -255,8 +313,8 @@ Returns true if the entry is writable for guests.
 :since:  v0.1.00
 		"""
 
-		document_data = self.get_data_attributes("locked", "public_permission")
-		return ((not document_data['locked']) and (document_data['public_permission'] == "w"))
+		entry_data = self.get_data_attributes("locked", "guest_permission")
+		return ((not entry_data['locked']) and (entry_data['guest_permission'] == "w"))
 	#
 
 	def is_writable_for_session_user(self, session):
@@ -292,9 +350,12 @@ Returns if the entry is writable for the given user ID.
 
 		if (user_profile != None and user_profile.is_valid()):
 		#
-			if (user_profile.is_type("ad")): _return = True
+			entry_data = self.get_data_attributes("locked", "user_permission")
 
-			if (not _return):
+			if (user_profile.is_type("ad")): _return = True
+			elif ((not entry_data['locked']) and entry_data['user_permission'] == "w"): _return = True
+
+			if ((not _return) and (not entry_data['locked'])):
 			#
 				permissions = self._get_permissions_user(user_id)
 
@@ -330,6 +391,33 @@ Resets the permission cache.
 				#
 			#
 		#
+	#
+
+	def set_permission_session(self, session):
+	#
+		"""
+Sets the session user ID to check permissions for.
+
+:param session: Session instance
+
+:since: v0.1.00
+		"""
+
+		if (Session == None): raise TypeException("Given session instance can not be verified")
+		self.set_permission_user_id(Session.get_session_user_id(session))
+	#
+
+	def set_permission_user_id(self, user_id):
+	#
+		"""
+Sets the user ID to check permissions for.
+
+:param user_id: User ID
+
+:since: v0.1.00
+		"""
+
+		self.permission_user_id = user_id
 	#
 #
 

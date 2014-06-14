@@ -36,7 +36,8 @@ http://www.direct-netware.de/redirect.py?licenses;gpl
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from sqlalchemy import BOOLEAN, Column, ForeignKey, VARCHAR
+from sqlalchemy.schema import Column, ForeignKey
+from sqlalchemy.types import BOOLEAN, VARCHAR
 from uuid import uuid4 as uuid
 
 from .abstract import Abstract

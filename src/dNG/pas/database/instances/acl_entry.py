@@ -36,8 +36,9 @@ http://www.direct-netware.de/redirect.py?licenses;gpl
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from sqlalchemy import CHAR, Column, VARCHAR
 from sqlalchemy.orm import relationship
+from sqlalchemy.schema import Column
+from sqlalchemy.types import CHAR, VARCHAR
 from uuid import uuid4 as uuid
 
 from .abstract import Abstract
