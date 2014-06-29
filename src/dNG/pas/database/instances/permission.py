@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.database.instances.Permission
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -33,8 +29,7 @@ http://www.direct-netware.de/redirect.py?licenses;gpl
 ----------------------------------------------------------------------------
 #echo(pasDatabaseOwnableVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import BOOLEAN, VARCHAR
