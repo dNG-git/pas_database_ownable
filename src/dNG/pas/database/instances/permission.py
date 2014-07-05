@@ -57,6 +57,10 @@ class Permission(Abstract):
 	"""
 SQLAlchemy table name
 	"""
+	db_schema_version = 1
+	"""
+Database schema version
+	"""
 
 	id = Column(VARCHAR(32), primary_key = True)
 	"""
