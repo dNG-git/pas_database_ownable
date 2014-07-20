@@ -125,6 +125,23 @@ Returns the user ID to check permissions for.
 		return self.permission_user_id
 	#
 
+	def _get_user_profile(self, user_id):
+	#
+		"""
+Returns the user profile instance for the given user ID.
+
+:param user_id: User ID
+
+:return: (object) User profile instance; None if not found
+:since:  v0.1.00
+		"""
+
+		user_profile_class = NamedLoader.get_class("dNG.pas.data.user.Profile")
+
+		_return = (None if (user_id == None or user_profile_class == None) else user_profile_class.load_id(user_id))
+		return (_return if (_return != None and _return.is_valid()) else None)
+	#
+
 	def _init_permission_cache(self):
 	#
 		"""
@@ -190,14 +207,12 @@ Returns true if the entry is manageable for the given user ID.
 
 		_return = False
 
-		user_profile_class = NamedLoader.get_class("dNG.pas.data.user.Profile")
-		user_profile = (None if (user_id == None or user_profile_class == None) else user_profile_class.load_id(user_id))
+		user_profile = self._get_user_profile(user_id)
 
-		if (user_profile != None and user_profile.is_valid()):
+		if (user_profile != None):
 		#
 			if (user_profile.is_type("ad")): _return = True
-
-			if (not _return):
+			else:
 			#
 				permissions = self._get_permissions_user(user_id)
 				if ("moderate" in permissions and user_profile.is_type("mo")): _return = True
@@ -228,11 +243,8 @@ Returns true if the entry is readable for guests.
 :since:  v0.1.00
 		"""
 
-		entry_data = self.get_data_attributes("locked", "guest_permission")
-
-		return ((not entry_data['locked'])
-		        and (entry_data['guest_permission'] == "r" or entry_data['guest_permission'] == "w")
-		       )
+		entry_data = self.get_data_attributes("guest_permission")
+		return (entry_data['guest_permission'] == "r" or entry_data['guest_permission'] == "w")
 	#
 
 	def is_readable_for_session_user(self, session):
@@ -263,24 +275,24 @@ Returns true if the entry is readable for the given user ID.
 
 		_return = self.is_readable_for_guest()
 
-		user_profile_class = NamedLoader.get_class("dNG.pas.data.user.Profile")
-		user_profile = (None if (_return or user_id == None or user_profile_class == None) else user_profile_class.load_id(user_id))
-
-		if (user_profile != None and user_profile.is_valid()):
+		if (not _return):
 		#
-			entry_data = self.get_data_attributes("locked", "user_permission")
+			user_profile = self._get_user_profile(user_id)
 
-			if (user_profile.is_type("ad")): _return = True
-			elif ((not entry_data['locked'])
-			    and (entry_data['user_permission'] == "r" or entry_data['user_permission'] == "w")
-			   ): _return = True
-
-			if ((not _return) and (not entry_data['locked'])):
+			if (user_profile != None):
 			#
-				permissions = self._get_permissions_user(user_id)
+				entry_data = self.get_data_attributes("user_permission")
 
-				if ("readable" in permissions): _return = True
-				elif ("moderate" in permissions and user_profile.is_type("mo")): _return = True
+				if (user_profile.is_type("ad")): _return = True
+				elif (entry_data['user_permission'] == "r" or entry_data['user_permission'] == "w"): _return = True
+
+				if (not _return):
+				#
+					permissions = self._get_permissions_user(user_id)
+
+					if ("readable" in permissions): _return = True
+					elif ("moderate" in permissions and user_profile.is_type("mo")): _return = True
+				#
 			#
 		#
 
@@ -308,8 +320,8 @@ Returns true if the entry is writable for guests.
 :since:  v0.1.00
 		"""
 
-		entry_data = self.get_data_attributes("locked", "guest_permission")
-		return ((not entry_data['locked']) and (entry_data['guest_permission'] == "w"))
+		entry_data = self.get_data_attributes("guest_permission")
+		return (entry_data['guest_permission'] == "w")
 	#
 
 	def is_writable_for_session_user(self, session):
@@ -340,22 +352,24 @@ Returns if the entry is writable for the given user ID.
 
 		_return = self.is_writable_for_guest()
 
-		user_profile_class = NamedLoader.get_class("dNG.pas.data.user.Profile")
-		user_profile = (None if (_return or user_id == None or user_profile_class == None) else user_profile_class.load_id(user_id))
-
-		if (user_profile != None and user_profile.is_valid()):
+		if (not _return):
 		#
-			entry_data = self.get_data_attributes("locked", "user_permission")
+			user_profile = self._get_user_profile(user_id)
 
-			if (user_profile.is_type("ad")): _return = True
-			elif ((not entry_data['locked']) and entry_data['user_permission'] == "w"): _return = True
-
-			if ((not _return) and (not entry_data['locked'])):
+			if (user_profile != None):
 			#
-				permissions = self._get_permissions_user(user_id)
+				entry_data = self.get_data_attributes("user_permission")
 
-				if ("writable" in permissions): _return = True
-				elif ("moderate" in permissions and user_profile.is_type("mo")): _return = True
+				if (user_profile.is_type("ad")): _return = True
+				elif (entry_data['user_permission'] == "w"): _return = True
+
+				if (not _return):
+				#
+					permissions = self._get_permissions_user(user_id)
+
+					if ("writable" in permissions): _return = True
+					elif ("moderate" in permissions and user_profile.is_type("mo")): _return = True
+				#
 			#
 		#
 
