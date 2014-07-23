@@ -36,7 +36,7 @@ from .ownable_mixin import OwnableMixin
 class OwnableLockableWriteMixin(OwnableMixin):
 #
 	"""
-"OwnableLockableWriteMixin" prevents writ) access to locked entries even
+"OwnableLockableWriteMixin" prevents write access to locked entries even
 if the user would normally have the required permission.
 
 :author:     direct Netware Group
