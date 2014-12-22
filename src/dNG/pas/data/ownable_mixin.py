@@ -138,8 +138,8 @@ Returns the user profile instance for the given user ID.
 
 		user_profile_class = NamedLoader.get_class("dNG.pas.data.user.Profile")
 
-		_return = (None if (user_id == None or user_profile_class == None) else user_profile_class.load_id(user_id))
-		return (_return if (_return != None and _return.is_valid()) else None)
+		_return = (None if (user_id is None or user_profile_class is None) else user_profile_class.load_id(user_id))
+		return (_return if (_return is not None and _return.is_valid()) else None)
 	#
 
 	def _init_permission_cache(self):
@@ -150,7 +150,7 @@ Initializes the permission cache.
 :since: v0.1.00
 		"""
 
-		if (self.permission_cache == None):
+		if (self.permission_cache is None):
 		#
 			with self:
 			#
@@ -191,7 +191,7 @@ session.
 :since:  v0.1.00
 		"""
 
-		return self.is_manageable_for_user(None if (Session == None) else (Session.get_session_user_id(session)))
+		return self.is_manageable_for_user(None if (Session is None) else (Session.get_session_user_id(session)))
 	#
 
 	def is_manageable_for_user(self, user_id):
@@ -209,7 +209,7 @@ Returns true if the entry is manageable for the given user ID.
 
 		user_profile = self._get_user_profile(user_id)
 
-		if (user_profile != None):
+		if (user_profile is not None):
 		#
 			if (user_profile.is_type("ad")): _return = True
 			else:
@@ -259,7 +259,7 @@ session.
 :since:  v0.1.00
 		"""
 
-		return self.is_readable_for_user(None if (Session == None) else (Session.get_session_user_id(session)))
+		return self.is_readable_for_user(None if (Session is None) else (Session.get_session_user_id(session)))
 	#
 
 	def is_readable_for_user(self, user_id):
@@ -279,7 +279,7 @@ Returns true if the entry is readable for the given user ID.
 		#
 			user_profile = self._get_user_profile(user_id)
 
-			if (user_profile != None):
+			if (user_profile is not None):
 			#
 				entry_data = self.get_data_attributes("user_permission")
 
@@ -336,7 +336,7 @@ session.
 :since:  v0.1.00
 		"""
 
-		return self.is_writable_for_user(None if (Session == None) else (Session.get_session_user_id(session)))
+		return self.is_writable_for_user(None if (Session is None) else (Session.get_session_user_id(session)))
 	#
 
 	def is_writable_for_user(self, user_id):
@@ -356,7 +356,7 @@ Returns if the entry is writable for the given user ID.
 		#
 			user_profile = self._get_user_profile(user_id)
 
-			if (user_profile != None):
+			if (user_profile is not None):
 			#
 				entry_data = self.get_data_attributes("user_permission")
 
@@ -385,7 +385,7 @@ Resets the permission cache.
 :since:  v0.1.00
 		"""
 
-		if (self.permission_cache == None):
+		if (self.permission_cache is None):
 		#
 			with self:
 			#
@@ -412,7 +412,7 @@ Sets the session user ID to check permissions for.
 :since: v0.1.00
 		"""
 
-		if (Session == None): raise TypeException("Given session instance can not be verified")
+		if (Session is None): raise TypeException("Given session instance can not be verified")
 		self.set_permission_user_id(Session.get_session_user_id(session))
 	#
 
