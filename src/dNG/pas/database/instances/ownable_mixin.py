@@ -55,7 +55,7 @@ given entry ID.
 	def rel_acl(self):
 	#
 		"""
-Relation to AclEntry (backref is set as "rel_referer")
+Relation to AclEntry
 
 :return: (object) SQLAlchemy relationship description
 :since:  v0.1.00
