@@ -65,10 +65,12 @@ with TemporaryDirectory(dir = ".") as build_directory:
 	      version = get_version(),
 	      description = "Python Application Services",
 	      long_description = """"pas_database_ownable" reflects an ownable database entry. This should mostly be the author or publisher.""",
-	      author = "direct Netware Group",
+	      author = "direct Netware Group et al.",
 	      author_email = "web@direct-netware.de",
 	      license = "GPLv2+",
 	      url = "https://www.direct-netware.de/redirect?pas;database_ownable",
+
+	      platforms = [ "any" ],
 
 	      package_dir = { "": _build_path },
 	      packages = [ "dNG" ],
