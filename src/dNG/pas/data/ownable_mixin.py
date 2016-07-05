@@ -124,6 +124,48 @@ Add the given ACL entry instance.
 		#
 	#
 
+	def _copy_acl_entries_from_instance(self, instance):
+	#
+		"""
+Copies default permission settings from the given instance.
+
+:param instance: OwnableMixin implementing instance
+
+:since: v0.1.02
+		"""
+
+		if (self.log_handler is not None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}._copy_acl_entries_from_instance()- (#echo(__LINE__)#)", self, context = "pas_database")
+
+		if (not isinstance(instance, OwnableMixin)): raise ValueException("Can't copy ACL entries from a non-ownable instance")
+
+		with instance, self, self.local.connection.no_autoflush:
+		#
+			rel_acl = instance.get_data_attributes("rel_acl")['rel_acl']
+
+			if (rel_acl is not None and len(rel_acl) > 0):
+			#
+				for source_acl_entry in rel_acl:
+				#
+					source_acl_entry_data = source_acl_entry.get_data_attributes("owner_id", "owner_type")
+
+					acl_entry = Entry()
+
+					acl_entry.set_data_attributes(owned_id = self.get_id(),
+					                              owner_id = source_acl_entry_data['owner_id'],
+					                              owner_type = source_acl_entry_data['owner_type']
+					                             )
+
+					permissions = source_acl_entry.get_permissions_dict()
+					for permission_name in permissions: acl_entry.set_permission(permission_name, permissions['permission_name'])
+
+					acl_entry.save()
+
+					self.add_acl(acl_entry)
+				#
+			#
+		#
+	#
+
 	def _copy_default_permission_settings_from_instance(self, instance):
 	#
 		"""
@@ -622,7 +664,7 @@ Changes the ACL permission of the entry to be writable by the given user ID.
 
 				acl_id = "u_{0}".format(user_id)
 
-				try: acl_entry = Entry.load_acl_id(acl_id)
+				try: acl_entry = Entry.load_acl_id(self.get_id(), acl_id)
 				except NothingMatchedException:
 				#
 					acl_entry = Entry()
