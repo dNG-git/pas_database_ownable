@@ -42,11 +42,11 @@ class OwnableMixin(object):
 The "OwnableMixin" class provides a relationship to a list of owners for the
 given entry ID.
 
-:author:     direct Netware Group
+:author:     direct Netware Group et al.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: database_ownable
-:since:      v0.1.00
+:since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
 	"""
@@ -58,7 +58,7 @@ given entry ID.
 Relation to AclEntry
 
 :return: (object) SQLAlchemy relationship description
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		return relationship(AclEntry, primaryjoin = (foreign(self.id) == remote(AclEntry.owned_id)), uselist = True)

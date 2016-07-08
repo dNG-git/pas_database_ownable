@@ -39,11 +39,11 @@ class OwnableLockableWriteMixin(OwnableMixin):
 "OwnableLockableWriteMixin" prevents write access to locked entries even
 if the user would normally have the required permission.
 
-:author:     direct Netware Group
+:author:     direct Netware Group et al.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: database_ownable
-:since:      v0.1.00
+:since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
 	"""
@@ -54,7 +54,7 @@ if the user would normally have the required permission.
 Returns true if the entry is writable for guests.
 
 :return: (bool) True if the entry is writable for guests
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		_return = OwnableMixin.is_writable_for_guest(self)
@@ -76,7 +76,7 @@ Returns if the entry is writable for the given user ID.
 :param user_id: User ID
 
 :return: (bool) True if the entry is writable for the given user ID
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		entry_data = self.get_data_attributes("locked")

@@ -31,13 +31,13 @@ https://www.direct-netware.de/redirect?licenses;gpl
 #echo(__FILEPATH__)#
 """
 
-from dNG.pas.data.acl.entry import Entry
-from dNG.pas.database.nothing_matched_exception import NothingMatchedException
-from dNG.pas.module.named_loader import NamedLoader
-from dNG.pas.runtime.type_exception import TypeException
-from dNG.pas.runtime.value_exception import ValueException
+from dNG.data.acl.entry import Entry
+from dNG.database.nothing_matched_exception import NothingMatchedException
+from dNG.module.named_loader import NamedLoader
+from dNG.runtime.type_exception import TypeException
+from dNG.runtime.value_exception import ValueException
 
-try: from dNG.pas.data.session.implementation import Implementation as Session
+try: from dNG.data.session.implementation import Implementation as Session
 except ImportError: Session = None
 
 class OwnableMixin(object):
@@ -46,11 +46,11 @@ class OwnableMixin(object):
 The "OwnableMixin" class provides a relationship to a list of permission
 owners for the given entry ID.
 
-:author:     direct Netware Group
+:author:     direct Netware Group et al.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: database_ownable
-:since:      v0.1.00
+:since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
 	"""
@@ -73,7 +73,7 @@ Writable permission
 		"""
 Constructor __init__(OwnableMixin)
 
-:since: v0.1.00
+:since: v0.2.00
 		"""
 
 		self.inherited_permission_guest_max = OwnableMixin.WRITABLE
@@ -105,7 +105,7 @@ Add the given ACL entry instance.
 
 :param acl_entry: ACL entry instance
 
-:since: v0.1.02
+:since: v0.2.00
 		"""
 
 		# pylint: disable=protected-access
@@ -131,7 +131,7 @@ Copies default permission settings from the given instance.
 
 :param instance: OwnableMixin implementing instance
 
-:since: v0.1.02
+:since: v0.2.00
 		"""
 
 		if (self.log_handler is not None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}._copy_acl_entries_from_instance()- (#echo(__LINE__)#)", self, context = "pas_database")
@@ -173,7 +173,7 @@ Copies default permission settings from the given instance.
 
 :param instance: OwnableMixin implementing instance
 
-:since: v0.1.02
+:since: v0.2.00
 		"""
 
 		if (self.log_handler is not None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}._copy_default_permissions_from_instance()- (#echo(__LINE__)#)", self, context = "pas_database")
@@ -210,7 +210,7 @@ allowed for the entry.
 :param permission: Permission to check and adjust
 
 :return: (str) Permission character
-:since:  v0.1.02
+:since:  v0.2.00
 		"""
 
 		_return = permission
@@ -229,7 +229,7 @@ Returns the list of permission rules based on the given cache ID.
 :param cache_id: Permission cache ID
 
 :return: (dict) Dict of permissions
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		self._init_permission_cache()
@@ -244,7 +244,7 @@ Returns the list of group permission rules based on the given group ID.
 :param group_id: Group ID
 
 :return: (dict) Dict of permissions
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		return self._get_permissions("g_{0}".format(group_id))
@@ -258,7 +258,7 @@ Returns the list of user permission rules based on the given user ID.
 :param user_id: User ID
 
 :return: (dict) Dict of permissions
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		return self._get_permissions("u_{0}".format(user_id))
@@ -270,7 +270,7 @@ Returns the list of user permission rules based on the given user ID.
 Returns the user ID to check permissions for.
 
 :return: (str) User ID
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		return self.permission_user_id
@@ -284,7 +284,7 @@ Returns the user profile instance for the given user ID.
 :param user_id: User ID
 
 :return: (object) User profile instance; None if not found
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		_return = None
@@ -295,7 +295,7 @@ Returns the user profile instance for the given user ID.
 
 			if (_return is None):
 			#
-				user_profile_class = NamedLoader.get_class("dNG.pas.data.user.Profile")
+				user_profile_class = NamedLoader.get_class("dNG.data.user.Profile")
 
 				_return = (None if (user_profile_class is None) else user_profile_class.load_id(user_id))
 				if (_return is not None): self.permission_user_profile_cache[user_id] = _return
@@ -312,7 +312,7 @@ Returns the user profile instance for the given user ID.
 		"""
 Initializes the permission cache.
 
-:since: v0.1.00
+:since: v0.2.00
 		"""
 
 		if (self.permission_cache is None):
@@ -338,7 +338,7 @@ Initializes the permission cache.
 Returns true if the entry is manageable for the defined user.
 
 :return: (bool) True if the entry is manageable for the defined user
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		return self.is_manageable_for_user(self.permission_user_id)
@@ -353,7 +353,7 @@ session.
 :param session: Session instance
 
 :return: (bool) True if the entry is manageable for the given session user
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		return self.is_manageable_for_user(None if (Session is None) else Session.get_session_user_id(session))
@@ -367,7 +367,7 @@ Returns true if the entry is manageable for the given user ID.
 :param user_id: User ID
 
 :return: (bool) True if the entry is manageable for the given user ID
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		_return = False
@@ -393,7 +393,7 @@ Returns true if the entry is manageable for the given user ID.
 Returns true if the entry is readable for the defined user.
 
 :return: (bool) True if the entry is readable for the defined user
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		return self.is_readable_for_user(self.permission_user_id)
@@ -405,7 +405,7 @@ Returns true if the entry is readable for the defined user.
 Returns true if the entry is readable for guests.
 
 :return: (bool) True if the entry is readable for guests
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		entry_data = self.get_data_attributes("guest_permission")
@@ -424,7 +424,7 @@ session.
 :param session: Session instance
 
 :return: (bool) True if the entry is readable for the given session user
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		return self.is_readable_for_user(None if (Session is None) else Session.get_session_user_id(session))
@@ -438,7 +438,7 @@ Returns true if the entry is readable for the given user ID.
 :param user_id: User ID
 
 :return: (bool) True if the entry is readable for the given user ID
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		_return = self.is_readable_for_guest()
@@ -476,7 +476,7 @@ Returns true if the entry is readable for the given user ID.
 Returns true if the entry is writable for the defined user.
 
 :return: (bool) True if the entry is writable for the defined user
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		return self.is_writable_for_user(self.permission_user_id)
@@ -488,7 +488,7 @@ Returns true if the entry is writable for the defined user.
 Returns true if the entry is writable for guests.
 
 :return: (bool) True if the entry is writable for guests
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		entry_data = self.get_data_attributes("guest_permission")
@@ -504,7 +504,7 @@ session.
 :param session: Session instance
 
 :return: (bool) True if the entry is writable for the given session user
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		return self.is_writable_for_user(None if (Session is None) else Session.get_session_user_id(session))
@@ -518,7 +518,7 @@ Returns if the entry is writable for the given user ID.
 :param user_id: User ID
 
 :return: (bool) True if the entry is writable for the given user ID
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		_return = self.is_writable_for_guest()
@@ -553,7 +553,7 @@ Returns if the entry is writable for the given user ID.
 Resets the permission cache.
 
 :return: (object) SQLAlchemy relationship description
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		self.permission_cache = None
@@ -569,7 +569,7 @@ source.
 :param inherited_permission_guest_max: Maximum permission for guests
 :param inherited_permission_user_max: Maximum permission for users
 
-:since: v0.1.02
+:since: v0.2.02
 		"""
 
 		self.inherited_permission_guest_max = inherited_permission_guest_max
@@ -583,7 +583,7 @@ Sets the session user ID to check permissions for.
 
 :param session: Session instance
 
-:since: v0.1.00
+:since: v0.2.00
 		"""
 
 		if (Session is None): raise TypeException("Given session instance can not be verified")
@@ -597,7 +597,7 @@ Sets the user ID to check permissions for.
 
 :param user_id: User ID
 
-:since: v0.1.00
+:since: v0.2.00
 		"""
 
 		self.permission_user_id = user_id
@@ -608,7 +608,7 @@ Sets the user ID to check permissions for.
 		"""
 Changes the ACL permission of the entry to be writable by the defined user.
 
-:since: v0.1.02
+:since: v0.2.00
 		"""
 
 		self.set_writable_for_user(self.permission_user_id)
@@ -620,7 +620,7 @@ Changes the ACL permission of the entry to be writable by the defined user.
 Changes the ACL permission of the entry to be writable by the defined logged
 in user.
 
-:since: v0.1.02
+:since: v0.2.00
 		"""
 
 		if (self.permission_user_id is not None):
@@ -637,7 +637,7 @@ identified by the given session.
 
 :param session: Session instance
 
-:since: v0.1.02
+:since: v0.2.00
 		"""
 
 		user_id = (None if (Session is None) else Session.get_session_user_id(session))
@@ -651,7 +651,7 @@ Changes the ACL permission of the entry to be writable by the given user ID.
 
 :param user_id: User ID
 
-:since: v0.1.02
+:since: v0.2.00
 		"""
 
 		if (user_id is None): raise ValueException("Permissions can only be set for individual users")
