@@ -148,19 +148,24 @@ Copies default permission settings from the given instance.
 				#
 					source_acl_entry_data = source_acl_entry.get_data_attributes("owner_id", "owner_type")
 
-					acl_entry = Entry()
+					acl_entry = self._get_or_create_acl_entry(self.get_id(),
+					                                          source_acl_entry_data['owner_id'],
+					                                          source_acl_entry_data['owner_type']
+					                                         )
 
-					acl_entry.set_data_attributes(owned_id = self.get_id(),
-					                              owner_id = source_acl_entry_data['owner_id'],
-					                              owner_type = source_acl_entry_data['owner_type']
-					                             )
+					acl_id = "{0}_{1}".format(source_acl_entry_data['owner_type'],
+					                          source_acl_entry_data['owner_id']
+					                         )
 
 					permissions = source_acl_entry.get_permissions_dict()
-					for permission_name in permissions: acl_entry.set_permission(permission_name, permissions['permission_name'])
+
+					for permission_name in permissions:
+					#
+						acl_entry.set_permission(permission_name, permissions[permission_name])
+						self.permission_cache[acl_id][permission_name] = permissions[permission_name]
+					#
 
 					acl_entry.save()
-
-					self.add_acl(acl_entry)
 				#
 			#
 		#
@@ -217,6 +222,42 @@ allowed for the entry.
 
 		if (inherited_permission_max == OwnableMixin.READABLE): _return = OwnableMixin.READABLE
 		elif (inherited_permission_max == OwnableMixin.NO_ACCESS): _return = OwnableMixin.NO_ACCESS
+
+		return _return
+	#
+
+	def _get_or_create_acl_entry(self, owned_id, owner_id, owner_type = "u"):
+	#
+		"""
+Returns the matching or a new ACL entry for the owned ID, owner type and ID
+given.
+
+:param owned_id: Owned ID
+:param owner_id: Owner ID
+:param owner_type: Owner type
+
+:since: v0.2.00
+		"""
+
+		if (self.permission_cache is None): self._init_permission_cache()
+
+		acl_id = "{0}_{1}".format(owner_type, owner_id)
+
+		try: _return = Entry.load_acl_id(owned_id, acl_id)
+		except NothingMatchedException:
+		#
+			_return = Entry()
+
+			_return.set_data_attributes(owned_id = owned_id,
+			                            owner_id = owner_id,
+			                            owner_type = owner_type
+			                           )
+
+			_return.save()
+
+			self.add_acl(_return)
+			self.permission_cache[acl_id] = { }
+		#
 
 		return _return
 	#
@@ -560,6 +601,84 @@ Resets the permission cache.
 		self.permission_user_profile_cache.clear()
 	#
 
+	def set_manageable(self):
+	#
+		"""
+Changes the ACL permission of the entry to be manageable by the defined user.
+
+:since: v0.2.00
+		"""
+
+		self.set_manageable_for_user(self.permission_user_id)
+	#
+
+	def set_manageable_if_logged_in(self):
+	#
+		"""
+Changes the ACL permission of the entry to be manageable by the defined logged
+in user.
+
+:since: v0.2.00
+		"""
+
+		if (self.permission_user_id is not None):
+		#
+			self.set_manageable_for_user(self.permission_user_id)
+		#
+	#
+
+	def set_manageable_for_session_user(self, session):
+	#
+		"""
+Changes the ACL permission of the entry to be manageable by the user
+identified by the given session.
+
+:param session: Session instance
+
+:since: v0.2.00
+		"""
+
+		user_id = (None if (Session is None) else Session.get_session_user_id(session))
+		self.set_manageable_for_user(user_id)
+	#
+
+	def set_manageable_for_user(self, user_id):
+	#
+		"""
+Changes the ACL permission of the entry to be manageable by the given user ID.
+
+:param user_id: User ID
+
+:since: v0.2.00
+		"""
+
+		if (user_id is None): raise ValueException("Permissions can only be set for individual users")
+
+		if (not self.is_manageable_for_user(user_id)):
+		#
+			with self:
+			#
+				acl_entry = self._get_or_create_acl_entry(self.get_id(), user_id)
+				acl_id = "u_{0}".format(user_id)
+
+				if ("readable" in self.permission_cache[acl_id]):
+				#
+					acl_entry.unset_permission("readable")
+					del(self.permission_cache[acl_id]['readable'])
+				#
+
+				if ("writable" in self.permission_cache[acl_id]):
+				#
+					acl_entry.unset_permission("writable")
+					del(self.permission_cache[acl_id]['writable'])
+				#
+
+				acl_entry.set_permission("manageable")
+				self.permission_cache[acl_id]['manageable'] = True
+			#
+		#
+	#
+
 	def set_max_inherited_permissions(self, inherited_permission_guest_max, inherited_permission_user_max):
 	#
 		"""
@@ -601,6 +720,72 @@ Sets the user ID to check permissions for.
 		"""
 
 		self.permission_user_id = user_id
+	#
+
+	def set_readable(self):
+	#
+		"""
+Changes the ACL permission of the entry to be readable by the defined user.
+
+:since: v0.2.00
+		"""
+
+		self.set_readable_for_user(self.permission_user_id)
+	#
+
+	def set_readable_if_logged_in(self):
+	#
+		"""
+Changes the ACL permission of the entry to be readable by the defined logged
+in user.
+
+:since: v0.2.00
+		"""
+
+		if (self.permission_user_id is not None):
+		#
+			self.set_readable_for_user(self.permission_user_id)
+		#
+	#
+
+	def set_readable_for_session_user(self, session):
+	#
+		"""
+Changes the ACL permission of the entry to be readable by the user
+identified by the given session.
+
+:param session: Session instance
+
+:since: v0.2.00
+		"""
+
+		user_id = (None if (Session is None) else Session.get_session_user_id(session))
+		self.set_readable_for_user(user_id)
+	#
+
+	def set_readable_for_user(self, user_id):
+	#
+		"""
+Changes the ACL permission of the entry to be readable by the given user ID.
+
+:param user_id: User ID
+
+:since: v0.2.00
+		"""
+
+		if (user_id is None): raise ValueException("Permissions can only be set for individual users")
+
+		if (not self.is_readable_for_user(user_id)):
+		#
+			with self:
+			#
+				acl_entry = self._get_or_create_acl_entry(self.get_id(), user_id)
+				acl_id = "u_{0}".format(user_id)
+
+				acl_entry.set_permission("readable")
+				self.permission_cache[acl_id]['readable'] = True
+			#
+		#
 	#
 
 	def set_writable(self):
@@ -660,23 +845,8 @@ Changes the ACL permission of the entry to be writable by the given user ID.
 		#
 			with self:
 			#
-				if (self.permission_cache is None): self._init_permission_cache()
-
+				acl_entry = self._get_or_create_acl_entry(self.get_id(), user_id)
 				acl_id = "u_{0}".format(user_id)
-
-				try: acl_entry = Entry.load_acl_id(self.get_id(), acl_id)
-				except NothingMatchedException:
-				#
-					acl_entry = Entry()
-
-					acl_entry.set_data_attributes(owned_id = self.get_id(),
-					                              owner_id = user_id,
-					                              owner_type = "u"
-					                             )
-
-					self.add_acl(acl_entry)
-					self.permission_cache[acl_id] = { }
-				#
 
 				if ("readable" in self.permission_cache[acl_id]):
 				#
