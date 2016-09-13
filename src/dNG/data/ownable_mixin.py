@@ -236,7 +236,8 @@ given.
 :param owner_id: Owner ID
 :param owner_type: Owner type
 
-:since: v0.2.00
+:return: (object) ACL entry matching the owned ID, owner type and ID given
+:since:  v0.2.00
 		"""
 
 		if (self.permission_cache is None): self._init_permission_cache()
