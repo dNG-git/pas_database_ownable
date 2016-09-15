@@ -422,7 +422,7 @@ Returns true if the entry is manageable for the given user ID.
 			else:
 			#
 				permissions = self._get_permissions_user(user_id)
-				if ("moderate" in permissions and user_profile.is_type("mo")): _return = True
+				if ("manageable" in permissions): _return = True
 			#
 		#
 
@@ -503,7 +503,7 @@ Returns true if the entry is readable for the given user ID.
 					permissions = self._get_permissions_user(user_id)
 
 					if ("readable" in permissions): _return = True
-					elif ("moderate" in permissions and user_profile.is_type("mo")): _return = True
+					elif ("manageable" in permissions): _return = True
 					elif ("writable" in permissions): _return = True
 				#
 			#
@@ -581,7 +581,7 @@ Returns if the entry is writable for the given user ID.
 					permissions = self._get_permissions_user(user_id)
 
 					if ("writable" in permissions): _return = True
-					elif ("moderate" in permissions and user_profile.is_type("mo")): _return = True
+					elif ("manageable" in permissions): _return = True
 				#
 			#
 		#
