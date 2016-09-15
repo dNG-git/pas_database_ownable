@@ -48,6 +48,33 @@ if the user would normally have the required permission.
              GNU General Public License 2
 	"""
 
+	def is_manageable_for_user(self, user_id):
+	#
+		"""
+Returns true if the entry is manageable for the given user ID.
+
+:param user_id: User ID
+
+:return: (bool) True if the entry is manageable for the given user ID
+:since:  v0.2.00
+		"""
+
+		_return = OwnableMixin.is_manageable_for_user(self, user_id)
+
+		if (_return):
+		#
+			entry_data = self.get_data_attributes("locked")
+
+			if (entry_data['locked']):
+			#
+				user_profile = self._get_user_profile(user_id)
+				_return = (user_profile is not None and user_profile.is_type_or_higher("ad"))
+			#
+		#
+
+		return _return
+	#
+
 	def is_writable_for_guest(self):
 	#
 		"""
@@ -79,12 +106,20 @@ Returns if the entry is writable for the given user ID.
 :since:  v0.2.00
 		"""
 
-		entry_data = self.get_data_attributes("locked")
+		_return = OwnableMixin.is_writable_for_user(self, user_id)
 
-		return (False
-		        if (entry_data['locked'] and (not self.is_manageable_for_user(user_id))) else
-		        OwnableMixin.is_writable_for_user(self, user_id)
-		       )
+		if (_return):
+		#
+			entry_data = self.get_data_attributes("locked")
+
+			if (entry_data['locked']):
+			#
+				user_profile = self._get_user_profile(user_id)
+				_return = (user_profile is not None and user_profile.is_type_or_higher("ad"))
+			#
+		#
+
+		return _return
 	#
 #
 

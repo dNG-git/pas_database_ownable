@@ -79,12 +79,20 @@ Returns true if the entry is readable for the given user ID.
 :since:  v0.2.00
 		"""
 
-		entry_data = self.get_data_attributes("locked")
+		_return = OwnableLockableWriteMixin.is_readable_for_user(self, user_id)
 
-		return (False
-		        if (entry_data['locked'] and (not self.is_manageable_for_user(user_id))) else
-		        OwnableLockableWriteMixin.is_readable_for_user(self, user_id)
-		       )
+		if (_return):
+		#
+			entry_data = self.get_data_attributes("locked")
+
+			if (entry_data['locked']):
+			#
+				user_profile = self._get_user_profile(user_id)
+				_return = (user_profile is not None and user_profile.is_type_or_higher("ad"))
+			#
+		#
+
+		return _return
 	#
 #
 
