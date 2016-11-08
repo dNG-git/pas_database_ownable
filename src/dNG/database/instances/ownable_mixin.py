@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -37,8 +36,7 @@ from sqlalchemy.orm import foreign, relationship, remote
 from .acl_entry import AclEntry
 
 class OwnableMixin(object):
-#
-	"""
+    """
 The "OwnableMixin" class provides a relationship to a list of owners for the
 given entry ID.
 
@@ -49,20 +47,17 @@ given entry ID.
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
-	"""
+    """
 
-	@declared_attr
-	def rel_acl(self):
-	#
-		"""
+    @declared_attr
+    def rel_acl(self):
+        """
 Relation to AclEntry
 
 :return: (object) SQLAlchemy relationship description
 :since:  v0.2.00
-		"""
+        """
 
-		return relationship(AclEntry, primaryjoin = (foreign(self.id) == remote(AclEntry.owned_id)), uselist = True)
-	#
+        return relationship(AclEntry, primaryjoin = (foreign(self.id) == remote(AclEntry.owned_id)), uselist = True)
+    #
 #
-
-##j## EOF

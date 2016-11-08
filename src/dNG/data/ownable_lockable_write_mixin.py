@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -34,8 +33,7 @@ https://www.direct-netware.de/redirect?licenses;gpl
 from .ownable_mixin import OwnableMixin
 
 class OwnableLockableWriteMixin(OwnableMixin):
-#
-	"""
+    """
 "OwnableLockableWriteMixin" prevents write access to locked entries even
 if the user would normally have the required permission.
 
@@ -46,81 +44,71 @@ if the user would normally have the required permission.
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
-	"""
+    """
 
-	def is_manageable_for_user(self, user_id):
-	#
-		"""
+    def is_manageable_for_user(self, user_id):
+        """
 Returns true if the entry is manageable for the given user ID.
 
 :param user_id: User ID
 
 :return: (bool) True if the entry is manageable for the given user ID
 :since:  v0.2.00
-		"""
+        """
 
-		_return = OwnableMixin.is_manageable_for_user(self, user_id)
+        _return = OwnableMixin.is_manageable_for_user(self, user_id)
 
-		if (_return):
-		#
-			entry_data = self.get_data_attributes("locked")
+        if (_return):
+            entry_data = self.get_data_attributes("locked")
 
-			if (entry_data['locked']):
-			#
-				user_profile = self._get_user_profile(user_id)
-				_return = (user_profile is not None and user_profile.is_type_or_higher("ad"))
-			#
-		#
+            if (entry_data['locked']):
+                user_profile = self._get_user_profile(user_id)
+                _return = (user_profile is not None and user_profile.is_type_or_higher("ad"))
+            #
+        #
 
-		return _return
-	#
+        return _return
+    #
 
-	def is_writable_for_guest(self):
-	#
-		"""
+    def is_writable_for_guest(self):
+        """
 Returns true if the entry is writable for guests.
 
 :return: (bool) True if the entry is writable for guests
 :since:  v0.2.00
-		"""
+        """
 
-		_return = OwnableMixin.is_writable_for_guest(self)
+        _return = OwnableMixin.is_writable_for_guest(self)
 
-		if (_return):
-		#
-			entry_data = self.get_data_attributes("locked")
-			_return = (not entry_data['locked'])
-		#
+        if (_return):
+            entry_data = self.get_data_attributes("locked")
+            _return = (not entry_data['locked'])
+        #
 
-		return _return
-	#
+        return _return
+    #
 
-	def is_writable_for_user(self, user_id):
-	#
-		"""
+    def is_writable_for_user(self, user_id):
+        """
 Returns if the entry is writable for the given user ID.
 
 :param user_id: User ID
 
 :return: (bool) True if the entry is writable for the given user ID
 :since:  v0.2.00
-		"""
+        """
 
-		_return = OwnableMixin.is_writable_for_user(self, user_id)
+        _return = OwnableMixin.is_writable_for_user(self, user_id)
 
-		if (_return):
-		#
-			entry_data = self.get_data_attributes("locked")
+        if (_return):
+            entry_data = self.get_data_attributes("locked")
 
-			if (entry_data['locked']):
-			#
-				user_profile = self._get_user_profile(user_id)
-				_return = (user_profile is not None and user_profile.is_type_or_higher("ad"))
-			#
-		#
+            if (entry_data['locked']):
+                user_profile = self._get_user_profile(user_id)
+                _return = (user_profile is not None and user_profile.is_type_or_higher("ad"))
+            #
+        #
 
-		return _return
-	#
+        return _return
+    #
 #
-
-##j## EOF
