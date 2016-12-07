@@ -30,6 +30,8 @@ https://www.direct-netware.de/redirect?licenses;gpl
 #echo(__FILEPATH__)#
 """
 
+# pylint: disable=import-error
+
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import foreign, relationship, remote
 

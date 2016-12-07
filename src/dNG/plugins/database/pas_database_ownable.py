@@ -30,7 +30,8 @@ https://www.direct-netware.de/redirect?licenses;gpl
 #echo(__FILEPATH__)#
 """
 
-# pylint: disable=unused-argument
+
+# pylint: disable=import-error, no-name-in-module, unused-argument
 
 from dNG.database.schema import Schema
 from dNG.module.named_loader import NamedLoader
